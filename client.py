@@ -13,9 +13,11 @@ import sys
 SERVER = sys.argv[1]
 PORT = int(sys.argv[2])
 
+if sys.argv[3] == "register":
+    LINE = "REGISTER " + "sip:" + sys.argv[4] + " SIP/2.0\r\n\r\n"
+else:
 
-# Contenido que vamos a enviar
-LINE = " ".join(sys.argv[3:])
+    LINE = " ".join(sys.argv[3:])
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
