@@ -34,6 +34,13 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 objetivo = objetivo.split(":")[1]
                 diccionario[objetivo] = ClienteIP
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                expires = line.split("\r\n")
+                expires = expires[1]
+                value = expires.split(": ")
+                value = value[1]
+                if int(value) == 0:
+                    del diccionario[objetivo]
+                    self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
             if not line:
                 break
 
