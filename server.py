@@ -33,6 +33,7 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
             if register[0] == "REGISTER":
                 objetivo = register[1]
                 objetivo = objetivo.split(":")[1]
+                SIPaddress = objetivo[1]
                 diccionario[objetivo] = ClienteIP
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
                 expires = line.split("\r\n")
@@ -52,13 +53,16 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     def register2file(self):
         fichero = opren("registered.txt", 'w')
         fichero.write("User\tIP\tExpires\n")
+        horaGMT = time.strftime('% Y - %m - %d % H: % M: % S',
+                                time.gmtime(time.time()))
         print diccionario
+        fichero.write(SIPaddress + "\t" + CLienteIP + "\t" + horaGMT)
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     PUERTO = int(sys.argv[1])
     serv = SocketServer.UDPServer(("", PUERTO), SIPRegisterHandler)
-    expirtion = {}
+    expiration = {}
     diccionario = {}
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()
