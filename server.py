@@ -7,6 +7,7 @@ en UDP simple
 
 import SocketServer
 import sys
+import time
 
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
@@ -41,13 +42,23 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 if int(value) == 0:
                     del diccionario[objetivo]
                     self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                else:
+                    self.tiempo_expiracion = value
+                    expiration[self.objetivo] = self.tiempo_expiracion
+                self.register2file()
             if not line:
                 break
+
+    def register2file(self):
+        fichero = opren("registered.txt", 'w')
+        fichero.write("User\tIP\tExpires\n")
+        print diccionario
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     PUERTO = int(sys.argv[1])
     serv = SocketServer.UDPServer(("", PUERTO), SIPRegisterHandler)
+    expirtion = {}
     diccionario = {}
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()
