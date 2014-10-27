@@ -37,11 +37,10 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 break
             print "El cliente nos manda " + peticion_string
             
-        # Imprimimos la dirección del cliente       
-        print self.client_address
-        print clients
-
+        # Imprimimos la dirección del cliente
+        print "Direccion cliente:", self.client_address, "\r\n\r\n"
         self.register2file()
+
     
     # Lleva un registro de los clientes conectados
     def register2file(self):
@@ -54,7 +53,10 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
         clients[self.sip_dir] = [self.client_address[0], expire]
         
         for client in clients.keys():
-            fich.write(client + '\t' + clients[client][0] + '\t' + clients[client][1] + '\r\n') 
+            if clients[client][1] > time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time())):
+                fich.write(client + '\t' + clients[client][0] + '\t' + clients[client][1] + '\r\n') 
+            else:
+                del clients[client]
         fich.close()       
             
 

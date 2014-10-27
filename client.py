@@ -10,16 +10,21 @@ import sys
 
 # Cliente UDP simple.
 
+# Control de uso
+if len(sys.argv) != 6 or sys.argv[3] != "register":
+    print "Usage: client.py ip puerto register sip_address expires_value"  
+    raise SystemExit  
+
+
 # Dirección IP del servidor.
 SERVER = sys.argv[1]
 PORT = int(sys.argv[2])
 
-# Contenido que vamos a enviar
+# Formamos la peticion
 PETICION = ""
-for word in sys.argv[3:]:
-    # Formamos la peticion
-    PETICION = "REGISTER sip:" + sys.argv[4] + " SIP/2.0\r\n"
-    PETICION += "Expires: " + sys.argv[5] + "\r\n"
+PETICION = "REGISTER sip:" + sys.argv[4] + " SIP/2.0\r\n"
+PETICION += "Expires: " + sys.argv[5] + "\r\n"
+
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
