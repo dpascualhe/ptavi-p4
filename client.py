@@ -10,6 +10,7 @@ import ast
 
 
 numparametros = len(sys.argv)
+version = "SIP/2.0"
 
 # Cliente UDP simple.
 
@@ -18,9 +19,14 @@ server = sys.argv[1]
 port = ast.literal_eval(sys.argv[2])
 
 # Contenido que vamos a enviar
-line = str()
-for i in range(3, numparametros):
-    line = line+" "+str(sys.argv[i])
+metodo = sys.argv[3]
+addr = sys.argv[4]
+
+if metodo == 'register':
+	METODO = metodo.upper()
+
+
+line = metod + " sip:" + addr + " " + VER + "\r\n"
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
