@@ -36,9 +36,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 				del self.ListCliente[i] #expirar y borrar cliente
 				print self.ListCliente
 		# Escribe dirección y puerto del cliente (de tupla client_address)
-		#self.wfile.write("Hemos recibido tu peticion")
-		#datos_clientes = list(self.client_address)
-		#print datos_clientes
 
 		while 1:
 		# Leyendo línea a línea lo que nos envía el cliente
