@@ -16,7 +16,7 @@ try:
 
     if sys.argv[3] == "register":
         LINE = "REGISTER" + " sip:" + sys.argv[4] + " SIP/2.0\r\n" + \
-        "Expires: " + sys.argv[5] + "\r\n\r\n"
+            "Expires: " + sys.argv[5] + "\r\n\r\n"
     else:
 
         linea = sys.argv[3:]
