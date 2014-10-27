@@ -10,8 +10,9 @@ import sys
 import ast
 
 port = ast.literal_eval(sys.argv[1])
+Cliente = {}
 
-class EchoHandler(SocketServer.DatagramRequestHandler):
+class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     """
     Echo server class
     """
@@ -23,13 +24,20 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
 	print datos_clientes
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
-            line = self.rfile.read()
-            print "El cliente nos manda " + line
-            if not line:
-                break
+            cadena = self.rfile.read()
+			if cadena != "":
+				lista = cadena.split()
+		        if lista[0] == 'REGISTER':
+					correo = lista[1]
+					correo = correo.split(":")[1]
+					ip = self.client_address[0]
+					Cliente[correo] = [ip]
+					self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+			else:
+				break
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", port), EchoHandler)
+    serv = SocketServer.UDPServer(("", port), SIPRegisterHandler)
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()
