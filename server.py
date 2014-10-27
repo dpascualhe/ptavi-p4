@@ -14,9 +14,9 @@ port = ast.literal_eval(sys.argv[1])
 fichero = 'registered.txt'
 
 def register2file(fichero, dicc):
- """
-   Imprimir el diccionario de clientes
- """
+    """
+      Imprimir el diccionario de clientes
+    """
 
     fich = open(fichero, 'w')
     for cliente in dicc.keys():
