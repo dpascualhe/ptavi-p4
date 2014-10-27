@@ -24,11 +24,11 @@ addr = sys.argv[4]
 expirar = sys.argv[5]
 
 if numparametros != 6:
-	print "Usage: client.py ip puerto register sip_address expires_value"
-	raise SystemExit
+    print "Usage: client.py ip puerto register sip_address expires_value"
+    raise SystemExit
 
 if metodo == 'register':
-	METODO = metodo.upper()
+    METODO = metodo.upper()
 
 
 line = metodo + " sip:" + addr + " " + version + "\r\n"
