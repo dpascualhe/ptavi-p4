@@ -22,16 +22,18 @@ port = ast.literal_eval(sys.argv[2])
 metodo = sys.argv[3]
 addr = sys.argv[4]
 
+
 if metodo == 'register':
 	METODO = metodo.upper()
 
 
-line = metod + " sip:" + addr + " " + VER + "\r\n"
+line = metodo + " sip:" + addr + " " + version + "\r\n"
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 my_socket.connect((server, port))
+
 
 print "Enviando: " + line
 my_socket.send(line + '\r\n')
