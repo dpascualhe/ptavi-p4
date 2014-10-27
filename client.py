@@ -15,20 +15,20 @@ version = "SIP/2.0"
 # Cliente UDP simple.
 
 # Dirección IP del servidor.
-server = sys.argv[1]
-port = ast.literal_eval(sys.argv[2])
+server = sys.argv[1] #ip
+port = ast.literal_eval(sys.argv[2]) #puerto
 
 # Contenido que vamos a enviar
-metodo = sys.argv[3]
-addr = sys.argv[4]
-expirar = sys.argv[5]
+metodo = sys.argv[3] # metodo
+addr = sys.argv[4] # direccion
+expirar = sys.argv[5] # tiempo de expirar
 
 if numparametros != 6:
     print "Usage: client.py ip puerto register sip_address expires_value"
     raise SystemExit
 
 if metodo == 'register':
-    METODO = metodo.upper()
+    METODO = metodo.upper() # metodo en mayusculas
 
 
 line = metodo + " sip:" + addr + " " + version + "\r\n"
@@ -46,6 +46,9 @@ data = my_socket.recv(1024)
 print 'Recibido -- ', data
 print "Terminando socket..."
 
+# Cerramos todo
+my_socket.close()
+print "Fin."
 # Cerramos todo
 my_socket.close()
 print "Fin."
