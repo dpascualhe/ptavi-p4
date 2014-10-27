@@ -8,61 +8,85 @@ en UDP simple
 import SocketServer
 import sys
 import time
+import os
 
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
-
     """
     Echo server class
     """
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write("Hemos recibido tu peticion")
         direccion = str(self.client_address)
         direccion = direccion.split(",")
-        ClienteIP = direccion[0][2:-1]
+        self.ClienteIP = direccion[0][2:-1]
         ClientePuerto = direccion[1][1:-1]
-        print "La IP del cliente es: " + ClienteIP
-        print "El puerto del cliente es: " + ClientePuerto
+        print "La IP del cliente es: ", self.ClienteIP
+        print "El puerto del cliente: ", ClientePuerto
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
             print "El cliente nos manda " + line
             register = line.split(" ")
             if register[0] == "REGISTER":
-                objetivo = register[1]
-                objetivo = objetivo.split(":")[1]
-                SIPaddress = objetivo[1]
-                diccionario[objetivo] = ClienteIP
-                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                self.objetivo = register[1]
+                self.objetivo = self.objetivo.split(":")[1]
                 expires = line.split("\r\n")
                 expires = expires[1]
                 value = expires.split(": ")
                 value = value[1]
+                segundos = time.time()
+                expires = int(segundos) + int(value)
+                expires = time.strftime('%Y­%m­%d %H:%M:%S', \
+                time.gmtime(expires))
+                lista = [self.ClienteIP, expires]
+
+                for usuario in dicc:
+                    if dicc[usuario][1] < \
+                    time.strftime('%Y­%m­%d %H:%M:%S', \
+                    time.gmtime(time.time())):
+                        del dicc[usuario]
+                        break
+
                 if int(value) == 0:
-                    del diccionario[objetivo]
-                    self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                    this = False
+                    for usuario in dicc:
+                        if usuario == self.objetivo:
+                            this = True
+
+                    if this:
+                        del dicc[self.objetivo]
                 else:
-                    self.tiempo_expiracion = value
-                    expiration[self.objetivo] = self.tiempo_expiracion
+
+                    dicc[self.objetivo] = lista
+		self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
                 self.register2file()
             if not line:
                 break
 
     def register2file(self):
-        fichero = opren("registered.txt", 'w')
-        fichero.write("User\tIP\tExpires\n")
-        horaGMT = time.strftime('% Y - %m - %d % H: % M: % S',
-                                time.gmtime(time.time()))
-        print diccionario
-        fichero.write(SIPaddress + "\t" + CLienteIP + "\t" + horaGMT)
+        biblio = "registered.txt"
+	if os.path.exists(biblio):
+		archivo = open(biblio, 'a')
+	
+	else:
+       		archivo = open("registered.txt", "w")
+        	archivo.write("User\tIP\tExpires\n")
+        for usuario in dicc:
+            year = str(dicc[usuario][1])[0:4]
+            month = str(dicc[usuario][1])[6:8]
+            day = str(dicc[usuario][1])[10:12]
+            hour = str(dicc[usuario][1].split(" ")[1])
+            archivo.write(str(usuario) + "\t" + \
+            str(dicc[usuario][0]) + "\t" + year + "-" + \
+            month + "-" + day + " " + hour + "\n")
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     PUERTO = int(sys.argv[1])
     serv = SocketServer.UDPServer(("", PUERTO), SIPRegisterHandler)
-    expiration = {}
-    diccionario = {}
+    dicc = {}
+    expiracion = {}
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()
