@@ -31,7 +31,7 @@ if metodo == 'register':
     METODO = metodo.upper() # metodo en mayusculas
 
 
-line = metodo + " sip:" + addr + " " + version + "\r\n"
+line = METODO + " sip:" + addr + " " + version + "\r\n"
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
