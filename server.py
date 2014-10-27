@@ -8,22 +8,30 @@ en UDP simple
 import SocketServer
 import sys
 
-class EchoHandler(SocketServer.DatagramRequestHandler):
+class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     """
-    Echo server class
+    Clase para SIP register 
     """
-
+    
     def handle(self):
-        # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write("Hemos recibido tu peticion")
+        # Inicializamos el diccionario de clientes
+        clients = {}
         while 1:
-            # Leyendo línea a línea lo que nos envía el cliente
-            line = self.rfile.read()
-            if not line:
+            # Leemos lo que nos envía el cliente
+            line_string = self.rfile.read()
+            line = line_string.split(" ")
+            # Procesamos el REGISTER
+            if line[0] == "REGISTER":
+                sip_dir = line[1].split(":")[1]
+                clients[sip_dir] = self.client_address[0]
+                # Enviamos OK 
+                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            if not line_string:
                 break
-            print "El cliente nos manda " + line
+            print "El cliente nos manda " + line_string
         # Imprimimos la dirección del cliente       
         print self.client_address
+        print clients
             
 
 # Extraemos el puerto de los argumentos
@@ -31,6 +39,6 @@ PORT = int(sys.argv[1])
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", PORT), EchoHandler)
     print "Lanzando servidor UDP de eco..."
+    serv = SocketServer.UDPServer(("", PORT), SIPRegisterHandler)
     serv.serve_forever()
