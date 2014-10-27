@@ -12,8 +12,8 @@ import sys
 
 # Control de uso
 if len(sys.argv) != 6 or sys.argv[3] != "register":
-    print "Usage: client.py ip puerto register sip_address expires_value"  
-    raise SystemExit  
+    print "Usage: client.py ip puerto register sip_address expires_value"
+    raise SystemExit
 
 
 # Dirección IP del servidor.
