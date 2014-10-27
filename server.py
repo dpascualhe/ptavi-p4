@@ -12,18 +12,22 @@ import os
 
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+
     """
     Echo server class
     """
 
     def handle(self):
+        """
+        Handler de registros SIP
+        """
         # Escribe dirección y puerto del cliente (de tupla client_address)
         direccion = str(self.client_address)
         direccion = direccion.split(",")
-        self.ClienteIP = direccion[0][2:-1]
-        ClientePuerto = direccion[1][1:-1]
-        print "La IP del cliente es: ", self.ClienteIP
-        print "El puerto del cliente: ", ClientePuerto
+        self.cliente_ip = direccion[0][2:-1]
+        cliente_puerto = direccion[1][1:-1]
+        print "La IP del cliente es: ", self.cliente_ip
+        print "El puerto del cliente: ", cliente_puerto
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
@@ -38,14 +42,14 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 value = value[1]
                 segundos = time.time()
                 expires = int(segundos) + int(value)
-                expires = time.strftime('%Y­%m­%d %H:%M:%S', \
-                time.gmtime(expires))
-                lista = [self.ClienteIP, expires]
+                expires = time.strftime('%Y­%m­%d %H:%M:%S',
+                                        time.gmtime(expires))
+                lista = [self.cliente_ip, expires]
 
                 for usuario in dicc:
                     if dicc[usuario][1] < \
-                    time.strftime('%Y­%m­%d %H:%M:%S', \
-                    time.gmtime(time.time())):
+                        time.strftime('%Y­%m­%d %H:%M:%S',
+                                      time.gmtime(time.time())):
                         del dicc[usuario]
                         break
 
@@ -60,27 +64,30 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 else:
 
                     dicc[self.objetivo] = lista
-		self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
                 self.register2file()
             if not line:
                 break
 
     def register2file(self):
+        """
+        Archivo que toma los registros de usuarios.
+        """
         biblio = "registered.txt"
-	if os.path.exists(biblio):
-		archivo = open(biblio, 'a')
-	
-	else:
-       		archivo = open("registered.txt", "w")
-        	archivo.write("User\tIP\tExpires\n")
+        if os.path.exists(biblio):
+            archivo = open(biblio, 'a')
+
+        else:
+            archivo = open("registered.txt", "w")
+            archivo.write("User\tIP\tExpires\n")
         for usuario in dicc:
             year = str(dicc[usuario][1])[0:4]
             month = str(dicc[usuario][1])[6:8]
             day = str(dicc[usuario][1])[10:12]
             hour = str(dicc[usuario][1].split(" ")[1])
-            archivo.write(str(usuario) + "\t" + \
-            str(dicc[usuario][0]) + "\t" + year + "-" + \
-            month + "-" + day + " " + hour + "\n")
+            archivo.write(str(usuario) + "\t" +
+                          str(dicc[usuario][0]) + "\t" + year + "-" +
+                          month + "-" + day + " " + hour + "\n")
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
