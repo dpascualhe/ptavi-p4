@@ -8,16 +8,34 @@ en UDP simple
 import SocketServer
 import sys
 import ast
+import time
 
 port = ast.literal_eval(sys.argv[1])
+fichero = 'registered.txt'
+
+def register2file(fichero, dicc):
+
+	fich = open(fichero, 'w')
+	for cliente in dicc.keys():
+		ip = dicc[user][0]
+		tiempo = dicc[user][1]
+		str_time = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(tiempo))
+		texto = cliente + '\t' + ip + '\t' + str_time + '\r\n'
+		fich.write(texto)
+	fich.close()
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     """
     Echo server class
     """
+
 	ListCliente = {}
     def handle(self):
 
+		for i in self.ListCliente.keys():
+			if self.ListCliente[i][1] < time.time():
+				del self.ListCliente[i]
+				print self.ListCliente
 
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write("Hemos recibido tu peticion")
@@ -34,8 +52,10 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 				if lista[6] == '0':
 					if correo in self.ListCliente:
 						del self.ListCliente[correo]
+					register2file(fichero, ListCliente)
 				else:
 					self.ListCliente[correo] = (ip, time.time()+float(lista[6]))
+					register2file(fichero, ListCliente)
 				self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
 			
 			if not lista:
