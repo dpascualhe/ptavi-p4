@@ -21,7 +21,11 @@ port = ast.literal_eval(sys.argv[2])
 # Contenido que vamos a enviar
 metodo = sys.argv[3]
 addr = sys.argv[4]
+expirar = sys.argv[5]
 
+if numparametros != 6:
+	print "Usage: client.py ip puerto register sip_address expires_value"
+	raise SystemExit
 
 if metodo == 'register':
 	METODO = metodo.upper()
@@ -34,7 +38,7 @@ my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 my_socket.connect((server, port))
 
-
+line = line + "Expires: " + expirar + "\r\n"
 print "Enviando: " + line
 my_socket.send(line + '\r\n')
 data = my_socket.recv(1024)
