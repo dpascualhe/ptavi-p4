@@ -16,22 +16,30 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     Echo server class
     """
 	ListCliente = {}
-
     def handle(self):
+
+
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write("Hemos recibido tu peticion")
 		datos_clientes = list(self.client_address)
 		print datos_clientes
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
-            cadena = self.rfile.read()
-			print cadena
-			lista = cadena.split()
+            lista = self.rfile.read()
+			print lista
+			lista = lista.split()
+			correo = lista[2]
+			ip = datos_clientes(0)
 		    if lista[0] == 'REGISTER':
-				correo = lista[1]
-				ip = datos_clientes(0)
-				self.ListCliente[correo] = (ip)
+				if lista[6] == '0':
+					if correo in self.ListCliente:
+						del self.ListCliente[correo]
+				else:
+					self.ListCliente[correo] = (ip, time.time()+float(lista[6]))
 				self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+			
+			if not lista:
+				break
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
