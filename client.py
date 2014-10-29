@@ -49,6 +49,3 @@ print "Terminando socket..."
 # Cerramos todo
 my_socket.close()
 print "Fin."
-# Cerramos todo
-my_socket.close()
-print "Fin."
