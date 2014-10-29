@@ -16,6 +16,9 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     """
 
     def handle(self):
+        """
+        Manejador de los registros SIP
+        """
         while 1:
             # Leemos lo que nos envía el cliente y lo separamos en lineas
             peticion_string = self.rfile.read()
@@ -44,6 +47,9 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
 
     # Lleva un registro de los clientes conectados
     def register2file(self):
+        """
+        Crea el archivo que toma los registros de los usuarios
+        """
         # Abrimos el fichero...
         fich = open('registered.txt', 'w')
         fich.write('User\tIP\tExpires\r\n')
