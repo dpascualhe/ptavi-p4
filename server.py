@@ -31,7 +31,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
-            print "El cliente nos manda " + line
             register = line.split(" ")
             if register[0] == "REGISTER":
                 self.objetivo = register[1]
@@ -54,12 +53,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                         break
 
                 if int(value) == 0:
-                    this = False
-                    for usuario in dicc:
-                        if usuario == self.objetivo:
-                            this = True
-
-                    if this:
                         del dicc[self.objetivo]
                 else:
 
@@ -68,18 +61,14 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 self.register2file()
             if not line:
                 break
+            print "El cliente nos manda " + line
 
     def register2file(self):
         """
         Archivo que toma los registros de usuarios.
         """
-        biblio = "registered.txt"
-        if os.path.exists(biblio):
-            archivo = open(biblio, 'a')
-
-        else:
-            archivo = open("registered.txt", "w")
-            archivo.write("User\tIP\tExpires\n")
+        archivo = open("registered.txt", "w")
+        archivo.write("User\tIP\tExpires\n")
         for usuario in dicc:
             year = str(dicc[usuario][1])[0:4]
             month = str(dicc[usuario][1])[6:8]
